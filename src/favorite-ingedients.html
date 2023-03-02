@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Favorite cocktails</title>
+    <title>Favorite ingredients</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -28,24 +28,25 @@
         <include src="./partials/header.html"></include>
         <include src="./partials/burger-menu.html"></include>
 
-        <section class="coctails-section">
-            <div class="container">
-            <h2 class="coctails-title">Favorite cocktails</h2>
-
-            <ul class="coctails__list"></ul>
-            <div class="pagination-box">
-              <ul class="pagination-list"></ul>
-            </div>
-            <div class="coctails-sorry">
+        <div class="container">
+          <section class="intgredients-section">
+            <h2 class="ingredients__title">Favorite ingredients</h2>
+            <div class="ingredients-sorry">
    
               <div/> 
-            </div>
-          </section>
-        
-      <include src="./partials/footer.html"></include>
+            <ul class="ingredients-list">
 
+            </ul>
+          </section>
+        </div>
+
+        <!-- <include src="./partials/modal-cocktails.html"></include>
+        <include src="./partials/modal-ingredients.html"></include> -->
+      <!-- </div> -->
+      <include src="./partials/footer.html"></include>
+    <!-- </div> -->
     <!-- <script src="./js/switch.js" type="module"></script>
-    <script src="./js/modal.js" type="module"></script> -->
-    <script src='/src/js/favorite-cocktails-list.js' type="module"></script>
+    <script src="./js/modal.js" type="module"></script>
+<script src="./js/localStorege/LocalStoregeIngridients.js" type="module"></script> -->
   </body>
 </html>

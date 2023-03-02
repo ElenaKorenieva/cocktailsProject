@@ -1,23 +1,13 @@
-import { keys } from './utils';
+import { keys, validatePage, onPageChange, createReadyMarkup } from './utils';
 
 const cocktailsList = document.querySelector('.coctails__list');
+const paginationListArea = document.querySelector('.pagination-list');
+const favoriteCocktailsList = JSON.parse(
+  localStorage.getItem(keys.favoriteCocktails)
+);
 
-function createFavoriteCocktailsList() {
-  const favoriteCocktailsList = JSON.parse(
-    localStorage.getItem(keys.favoriteCocktails)
-  );
-  debugger;
-  if (
-    favoriteCocktailsList === undefined ||
-    favoriteCocktailsList?.length === 0
-  ) {
-    cocktailsList.innerHTML = `<p class="sorry__title-coctails ">You haven't added any favorite cocktails yet</p>`;
-  } else {
-    cocktailsList.innerHTML = favoriteCocktailsList.join('');
-  }
-}
+validatePage(favoriteCocktailsList, keys.favoriteCocktails);
 
-createFavoriteCocktailsList();
 cocktailsList.addEventListener('click', onFavoriteCocktailClick);
 
 function onFavoriteCocktailClick(event) {
@@ -30,5 +20,12 @@ function onFavoriteCocktailClick(event) {
   const cardId = storage.findIndex(el => el.includes(cocktailCard.dataset.id));
   storage.splice(cardId, 1);
   localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
-  createFavoriteCocktailsList();
+  createReadyMarkup(currentPage, keys.favoriteCocktails);
 }
+
+let currentPage = 1;
+
+paginationListArea.addEventListener('click', event => {
+  currentPage = +event.target.textContent;
+  onPageChange(event, true, keys.favoriteCocktails);
+});

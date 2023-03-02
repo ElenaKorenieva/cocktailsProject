@@ -1,13 +1,21 @@
-import { keys } from './utils';
+import { keys, onPageChange, onLearnMoreClick } from './utils';
 import { onFavoriteCocktailClick, createMarkup } from './utils';
 
 const galleryList = document.querySelector('.gallery__list');
 const paginationListArea = document.querySelector('.pagination-list');
 
-galleryList.addEventListener('click', onFavoriteCocktailClick);
-paginationListArea.addEventListener('click', onPageChange);
+galleryList.addEventListener('click', galleryHandler);
+paginationListArea.addEventListener('click', event => {
+  onPageChange(event, false);
+});
 
-function onPageChange(event) {
-  const pageNumber = +event.target.textContent;
-  createMarkup(pageNumber);
+function galleryHandler(e) {
+  console.log(e.target.textContent);
+  const buttonText = e.target.textContent;
+  if (buttonText === 'Learn more') {
+    onLearnMoreClick(e);
+  }
+  if (buttonText.includes('Add to') || buttonText === 'Remove') {
+    onFavoriteCocktailClick(e);
+  }
 }
