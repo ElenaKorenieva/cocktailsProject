@@ -1,5 +1,14 @@
-import { keys, onPageChange, onLearnMoreClick } from './utils';
-import { onFavoriteCocktailClick, createMarkup } from './utils';
+import {
+  keys,
+  onPageChange,
+  onLearnMoreClick,
+  onFavoriteCocktailClick,
+  createMarkup,
+  currentPage,
+  pages,
+} from './utils';
+
+currentPage = pages.main;
 
 const galleryList = document.querySelector('.gallery__list');
 const paginationListArea = document.querySelector('.pagination-list');

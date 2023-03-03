@@ -1,5 +1,12 @@
 import fetchData from './fetch';
 
+export const pages = {
+  main: '.gallery__list',
+  favoriteCocktails: '.coctails__list',
+  favoriteIngredients: '.ingredients-list',
+};
+export let currentPage = pages.main;
+
 export function createMarkup(currentPage) {
   currentPage--;
   const cocktailsArea = document.querySelector('.gallery__list');
@@ -60,24 +67,15 @@ export function checkClientViewPort() {
 
 export function onFavoriteCocktailClick(event) {
   const targetElement = event.target;
-  const storage =
-    JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
   const cocktailCard = targetElement.closest('.gallery__card');
 
-  debugger;
   if (targetElement.textContent === 'Remove') {
     targetElement.textContent = 'Add to';
-    const cardId = storage.findIndex(el =>
-      el.includes(cocktailCard.dataset.id)
-    );
-
-    storage.splice(cardId, 1);
-    localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
+    removeFromFavoriteCocktails(cocktailCard);
   }
   if (targetElement.textContent.includes('Add to')) {
     targetElement.textContent = 'Remove';
-    storage.push(cocktailCard.outerHTML);
-    localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
+    addToFavoriteCocktails(cocktailCard);
   }
 }
 
@@ -170,7 +168,7 @@ function createInfoMarkup(data) {
     '.cocktail-info-modal-contents'
   );
   modalWindow.classList.remove('is-hidden');
-  console.log(data);
+
   const cocktailName = data.strDrink;
   const cocktailDescription = data.strInstructions;
   const cocktailImg = data.strDrinkThumb;
@@ -211,4 +209,50 @@ function createInfoMarkup(data) {
       ? 'Remove'
       : 'Add to favorite'
   }</button></div>`;
+
+  modalContainer.addEventListener('click', onModalClick);
+}
+
+function onModalClick(e) {
+  const target = e.target;
+  const buttonText = target.textContent;
+  const cocktailName = target.closest('.cocktail-info-modal-contents')
+    .firstElementChild.textContent;
+
+  let targetElement;
+  const targetArea = document.querySelector(currentPage);
+
+  for (el of targetArea.children) {
+    if (el.dataset.name === cocktailName) {
+      targetElement = el;
+      return;
+    }
+  }
+  if (buttonText === 'Add to favorite') {
+    target.textContent = 'Remove';
+    addToFavoriteCocktails(targetElement);
+    return;
+  }
+  if (buttonText === 'Remove') {
+    target.textContent = 'Add to favorite';
+    removeFromFavoriteCocktails(targetElement);
+  }
+}
+
+function addToFavoriteCocktails(element) {
+  const storage =
+    JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
+  console.log(storage);
+  storage.push(element.outerHTML);
+  localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
+}
+
+function removeFromFavoriteCocktails(element) {
+  const storage =
+    JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
+  console.log(storage);
+  const cardId = storage.findIndex(el => el.includes(element.dataset.id));
+
+  storage.splice(cardId, 1);
+  localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
 }

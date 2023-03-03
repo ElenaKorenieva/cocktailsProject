@@ -1,4 +1,13 @@
-import { keys, validatePage, onPageChange, createReadyMarkup } from './utils';
+import {
+  keys,
+  validatePage,
+  onPageChange,
+  createReadyMarkup,
+  currentPage,
+  pages,
+} from './utils';
+
+currentPage = pages.favoriteCocktails;
 
 const cocktailsList = document.querySelector('.coctails__list');
 const paginationListArea = document.querySelector('.pagination-list');
