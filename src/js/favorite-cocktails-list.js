@@ -29,12 +29,14 @@ function onFavoriteCocktailClick(event) {
   const cardId = storage.findIndex(el => el.includes(cocktailCard.dataset.id));
   storage.splice(cardId, 1);
   localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
-  createReadyMarkup(currentPage, keys.favoriteCocktails);
+  createReadyMarkup(dispalyedPage, keys.favoriteCocktails);
 }
 
-let currentPage = 1;
+let dispalyedPage = 1;
 
 paginationListArea.addEventListener('click', event => {
-  currentPage = +event.target.textContent;
+  dispalyedPage = +event.target.textContent;
   onPageChange(event, true, keys.favoriteCocktails);
 });
+
+

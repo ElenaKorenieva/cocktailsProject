@@ -47,6 +47,7 @@ export function createMarkup(currentPage) {
 export const keys = {
   favoriteCocktails: 'favoriteCocktails',
   cocktailsList: 'cocktailsList',
+  favoriteIngredients: 'favoriteIngredients',
 };
 
 const resolutionQuery = {
@@ -70,11 +71,10 @@ export function onFavoriteCocktailClick(event) {
   const cocktailCard = targetElement.closest('.gallery__card');
 
   if (targetElement.textContent === 'Remove') {
-    targetElement.textContent = 'Add to';
     removeFromFavoriteCocktails(cocktailCard);
+    return;
   }
   if (targetElement.textContent.includes('Add to')) {
-    targetElement.textContent = 'Remove';
     addToFavoriteCocktails(cocktailCard);
   }
 }
@@ -167,6 +167,7 @@ function createInfoMarkup(data) {
   const modalContainer = document.querySelector(
     '.cocktail-info-modal-contents'
   );
+
   modalWindow.classList.remove('is-hidden');
 
   const cocktailName = data.strDrink;
@@ -205,15 +206,31 @@ function createInfoMarkup(data) {
         </ul>
       </div>
       <div class ="button-wrap"><button type="button" class="button-more modal-add" id=${cocktailID} >${
-    localStorage.getItem(keys.favoriteCocktails).includes(cocktailName)
+    (localStorage.getItem(keys.favoriteCocktails) || '').includes(cocktailName)
       ? 'Remove'
       : 'Add to favorite'
   }</button></div>`;
 
   modalContainer.addEventListener('click', onModalClick);
+
+  const modalBackdrop = document.querySelector('.coctail-info-modal__wrap');
+  const modal = document.querySelector('.coctail-info-modal');
+
+  modalBackdrop.addEventListener('click', e => {
+    closeModal();
+  });
+  function closeModal() {
+    modal.classList.add('is-hidden');
+  }
+
+  const ingredientList = document.querySelector(
+    '.modal-cocktail-ingredients-list'
+  );
+  ingredientList.addEventListener('click', onIngredientHandler);
 }
 
 function onModalClick(e) {
+  e.stopPropagation();
   const target = e.target;
   const buttonText = target.textContent;
   const cocktailName = target.closest('.cocktail-info-modal-contents')
@@ -225,13 +242,12 @@ function onModalClick(e) {
   for (el of targetArea.children) {
     if (el.dataset.name === cocktailName) {
       targetElement = el;
-      return;
     }
   }
   if (buttonText === 'Add to favorite') {
+    console.log(target.textContent);
     target.textContent = 'Remove';
     addToFavoriteCocktails(targetElement);
-    return;
   }
   if (buttonText === 'Remove') {
     target.textContent = 'Add to favorite';
@@ -240,19 +256,91 @@ function onModalClick(e) {
 }
 
 function addToFavoriteCocktails(element) {
+  element.querySelector('.button-add').textContent = 'Remove';
   const storage =
     JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
-  console.log(storage);
   storage.push(element.outerHTML);
   localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
 }
 
 function removeFromFavoriteCocktails(element) {
+  element.querySelector('.button-add').textContent = 'Add to';
   const storage =
     JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
-  console.log(storage);
   const cardId = storage.findIndex(el => el.includes(element.dataset.id));
 
   storage.splice(cardId, 1);
   localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
+}
+
+async function onIngredientHandler(e) {
+  e.preventDefault();
+  const ingredientName = e.target.textContent.slice(2);
+  const ingredientData = await fetchData.fetchIngredientByName(ingredientName);
+
+  ingredientMarkupCreate(ingredientData.ingredients[0]);
+
+  const modalWrap = document.querySelector('.coctail-igredient-modal__wrap');
+  const modal = document.querySelector('.coctail-igredient-modal');
+
+  function onFavIngredientsClose() {
+    modal.classList.add('is-hidden');
+  }
+
+  modalWrap.addEventListener('click', onFavIngredientsClose);
+}
+
+function ingredientMarkupCreate({
+  idIngredient,
+  strIngredient,
+  strType,
+  strDescription,
+  strAlcohol,
+}) {
+  const favIngredientsObg = {
+    idIngredient,
+    strIngredient,
+    strType,
+  };
+
+  const modalWrap = document.querySelector('coctail-igredient-modal__wrap');
+  const modalIngredient = document.querySelector('.coctail-igredient-modal');
+  modalIngredient.classList.remove('is-hidden');
+  const localStorageIngerdient =
+    localStorage.getItem(keys.favoriteIngredients) || '';
+  const isReadyInLocalStorage =
+    localStorageIngerdient != ''
+      ? localStorageIngerdient.includes(idIngredient)
+      : '';
+
+  if (!isReadyInLocalStorage) {
+    const dataToStore = [];
+    const localStorageData = JSON.parse(
+      localStorage.getItem(keys.favoriteIngredients)
+    );
+    dataToStore.push(localStorageData, favIngredientsObg);
+
+    localStorage.setItem(keys.favoriteIngredients, JSON.stringify(dataToStore));
+  }
+
+  const markup = `
+  <div data-ingredient=${idIngredient || ''}></div>
+  <h1 class="modal-cocktail-ingredients-name">${strIngredient || ''}</h1>
+  <h2 class="modal-cocktail-ingredients-title">${strType || ''}</h2>
+  <div class="modal-cocktail-ingredients-line"></div>
+  <p class="modal-cocktail-ingredients-text">${strDescription || ''}</p>
+  <ul class="modal-cocktail-ingredients-description-list">
+  ${strType ? '<li>Type:&nbsp ' + strType + '</li>' : ''}
+  ${strAlcohol ? '<li>Alcohol by volume:&nbsp ' + strAlcohol + '</li>' : ''}
+            <li></li>
+            </ul>
+            <button type="button" class="button-more modal-add button-more__ingridients" id=${idIngredient}>
+            ${isReadyInLocalStorage ? 'Remove' : 'Add to'} 
+          </button>
+            `;
+  const ingredientContainer = document.querySelector(
+    '.cocktail-ingredients-modal-contents'
+  );
+  ingredientContainer.innerHTML = markup;
+  // todo add switch remove/add to favorite
 }
