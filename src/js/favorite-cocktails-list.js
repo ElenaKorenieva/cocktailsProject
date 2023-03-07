@@ -11,9 +11,8 @@ currentPage = pages.favoriteCocktails;
 
 const cocktailsList = document.querySelector('.coctails__list');
 const paginationListArea = document.querySelector('.pagination-list');
-const favoriteCocktailsList = JSON.parse(
-  localStorage.getItem(keys.favoriteCocktails)
-);
+const favoriteCocktailsList =
+  JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
 
 validatePage(favoriteCocktailsList, keys.favoriteCocktails);
 
@@ -38,5 +37,3 @@ paginationListArea.addEventListener('click', event => {
   dispalyedPage = +event.target.textContent;
   onPageChange(event, true, keys.favoriteCocktails);
 });
-
-

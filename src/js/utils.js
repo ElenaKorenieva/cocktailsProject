@@ -84,35 +84,49 @@ function getPagesCount(resultCount) {
 }
 
 export function validatePage(elements, localStorageKey) {
-  const pages = getPagesCount(elements.length);
+  if (!elements) {
+    elements = [];
+  }
+
+  const pagesAmount = getPagesCount(elements.length);
 
   if (typeof elements[0] === 'string') {
-    createReadyMarkup(pages === 0 ? 0 : 1, localStorageKey);
-    if (pages > 1) {
-      createPagination(pages);
+    createReadyMarkup(pagesAmount === 0 ? 0 : 1, localStorageKey);
+    if (pagesAmount > 1) {
+      createPagination(pagesAmount);
     }
     return;
   }
 
   localStorage.setItem(keys.cocktailsList, JSON.stringify(elements));
 
-  const sorryBlock = document.querySelector('.sorry');
+  console.log(currentPage);
+  console.log(pages.main);
+  if (currentPage === pages.main) {
+    const sorryBlock = document.querySelector('.sorry');
+    const gallery = document.querySelector('.gallery');
 
-  if (pages <= 0) {
-    sorryBlock.classList.remove('hidden');
-    return;
-  } else {
-    sorryBlock.classList.add('hidden');
+    console.log('gallery', gallery);
+    if (pagesAmount <= 0) {
+      gallery.classList.add('visually-hidden');
+      sorryBlock.classList.remove('hidden');
+      return;
+    } else {
+      sorryBlock.classList.add('hidden');
+      gallery.classList.remove('visually-hidden');
+    }
   }
 
   createMarkup(1);
-  if (pages > 1) {
-    createPagination(pages);
+
+  if (pagesAmount > 1) {
+    createPagination(pagesAmount);
   }
 }
 
 function createPagination(pages) {
   const paginationListArea = document.querySelector('.pagination-list');
+  console.log(paginationListArea);
   let markUpString = '';
   for (let i = 1; i <= pages; i++) {
     markUpString += `<li class="pagination-item"><button type="button" class="pagination-button">${i}</button>
@@ -168,6 +182,7 @@ function createInfoMarkup(data) {
     '.cocktail-info-modal-contents'
   );
 
+  console.log('modalWindow', modalWindow);
   modalWindow.classList.remove('is-hidden');
 
   const cocktailName = data.strDrink;
@@ -220,6 +235,7 @@ function createInfoMarkup(data) {
     closeModal();
   });
   function closeModal() {
+    console.log('modal', modal);
     modal.classList.add('is-hidden');
   }
 
@@ -273,55 +289,35 @@ function removeFromFavoriteCocktails(element) {
   localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
 }
 
-async function onIngredientHandler(e) {
+export async function onIngredientHandler(e) {
   e.preventDefault();
   const ingredientName = e.target.textContent.slice(2);
   const ingredientData = await fetchData.fetchIngredientByName(ingredientName);
 
   ingredientMarkupCreate(ingredientData.ingredients[0]);
-
-  const modalWrap = document.querySelector('.coctail-igredient-modal__wrap');
-  const modal = document.querySelector('.coctail-igredient-modal');
-
-  function onFavIngredientsClose() {
-    modal.classList.add('is-hidden');
-  }
-
-  modalWrap.addEventListener('click', onFavIngredientsClose);
 }
 
-function ingredientMarkupCreate({
-  idIngredient,
-  strIngredient,
-  strType,
-  strDescription,
-  strAlcohol,
-}) {
+export function ingredientMarkupCreate(
+  { idIngredient, strIngredient, strType, strDescription, strAlcohol },
+  onRemoveCallback
+) {
   const favIngredientsObg = {
     idIngredient,
     strIngredient,
     strType,
+    strDescription,
+    strAlcohol,
   };
 
   const modalWrap = document.querySelector('coctail-igredient-modal__wrap');
   const modalIngredient = document.querySelector('.coctail-igredient-modal');
+  console.log('modalIngredient', modalIngredient);
   modalIngredient.classList.remove('is-hidden');
   const localStorageIngerdient =
-    localStorage.getItem(keys.favoriteIngredients) || '';
-  const isReadyInLocalStorage =
-    localStorageIngerdient != ''
-      ? localStorageIngerdient.includes(idIngredient)
-      : '';
-
-  if (!isReadyInLocalStorage) {
-    const dataToStore = [];
-    const localStorageData = JSON.parse(
-      localStorage.getItem(keys.favoriteIngredients)
-    );
-    dataToStore.push(localStorageData, favIngredientsObg);
-
-    localStorage.setItem(keys.favoriteIngredients, JSON.stringify(dataToStore));
-  }
+    JSON.parse(localStorage.getItem(keys.favoriteIngredients)) || [];
+  const isReadyInLocalStorage = localStorageIngerdient.some(
+    el => el.idIngredient === idIngredient
+  );
 
   const markup = `
   <div data-ingredient=${idIngredient || ''}></div>
@@ -343,4 +339,51 @@ function ingredientMarkupCreate({
   );
   ingredientContainer.innerHTML = markup;
   // todo add switch remove/add to favorite
+
+  const modalIngredientsBtn = document.querySelector(
+    '.button-more__ingridients'
+  );
+
+  modalIngredientsBtn.addEventListener('click', e => {
+    onClickHandler(e, favIngredientsObg, onRemoveCallback);
+  });
+
+  const modalClose = document.querySelector('.coctail-igredient-modal-close');
+
+  function onFavIngredientsClose(e) {
+    const parentEl = e.target.closest('.coctail-igredient-modal');
+    console.log('parentEl', parentEl);
+    parentEl.classList.add('is-hidden');
+  }
+
+  modalClose.addEventListener('click', onFavIngredientsClose);
+}
+
+function onClickHandler(e, ingedientData, onRemoveCallback) {
+  const btnContent = e.target.textContent;
+  const localStorageData =
+    JSON.parse(localStorage.getItem(keys.favoriteIngredients)) || [];
+
+  if (btnContent.includes('Add to')) {
+    localStorageData.push(ingedientData);
+    localStorage.setItem(
+      keys.favoriteIngredients,
+      JSON.stringify(localStorageData)
+    );
+    e.target.textContent = 'Remove';
+  }
+  if (btnContent.includes('Remove')) {
+    const ingredientId = localStorageData.findIndex(
+      el => el.idIngredient === ingedientData.idIngredient
+    );
+    localStorageData.splice(ingredientId, 1);
+
+    localStorage.setItem(
+      keys.favoriteIngredients,
+      JSON.stringify(localStorageData)
+    );
+    if (onRemoveCallback) {
+      onRemoveCallback();
+    }
+  }
 }
