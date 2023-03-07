@@ -12,7 +12,6 @@ export const environment = {
 export function createMarkup(currentPage) {
   currentPage--;
   const cocktailsArea = document.querySelector('.gallery__list');
-  console.log(cocktailsArea);
   const svgLink = require('../img/icons.svg');
   const svg = ` &nbsp<svg class="icon" width="21" height="19">
   <use href="${svgLink}#icon-heart-empty"></use>
@@ -92,8 +91,8 @@ export function validatePage(elements, localStorageKey) {
   }
 
   const pagesAmount = getPagesCount(elements.length);
-
-  if (typeof elements[0] === 'string') {
+  console.log(typeof elements[0]);
+  if (environment.currentPage === pages.favoriteCocktails) {
     createReadyMarkup(pagesAmount === 0 ? 0 : 1, localStorageKey);
     if (pagesAmount > 1) {
       createPagination(pagesAmount);
@@ -103,12 +102,10 @@ export function validatePage(elements, localStorageKey) {
 
   localStorage.setItem(keys.cocktailsList, JSON.stringify(elements));
 
-  console.log(environment.currentPage);
   if (environment.currentPage === pages.main) {
     const sorryBlock = document.querySelector('.sorry');
     const gallery = document.querySelector('.gallery');
 
-    console.log('gallery', gallery);
     if (pagesAmount <= 0) {
       gallery.classList.add('visually-hidden');
       sorryBlock.classList.remove('hidden');
@@ -117,9 +114,10 @@ export function validatePage(elements, localStorageKey) {
       sorryBlock.classList.add('hidden');
       gallery.classList.remove('visually-hidden');
     }
+    createMarkup(1);
   }
 
-  createMarkup(1);
+
 
   if (pagesAmount > 1) {
     createPagination(pagesAmount);
@@ -128,7 +126,6 @@ export function validatePage(elements, localStorageKey) {
 
 function createPagination(pages) {
   const paginationListArea = document.querySelector('.pagination-list');
-  console.log(paginationListArea);
   let markUpString = '';
   for (let i = 1; i <= pages; i++) {
     markUpString += `<li class="pagination-item"><button type="button" class="pagination-button">${i}</button>
@@ -184,7 +181,6 @@ function createInfoMarkup(data) {
     '.cocktail-info-modal-contents'
   );
 
-  console.log('modalWindow', modalWindow);
   modalWindow.classList.remove('is-hidden');
 
   const cocktailName = data.strDrink;
@@ -237,7 +233,6 @@ function createInfoMarkup(data) {
     closeModal();
   });
   function closeModal() {
-    console.log('modal', modal);
     modal.classList.add('is-hidden');
   }
 
@@ -263,7 +258,6 @@ function onModalClick(e) {
     }
   }
   if (buttonText === 'Add to favorite') {
-    console.log(target.textContent);
     target.textContent = 'Remove';
     addToFavoriteCocktails(targetElement);
   }
@@ -313,7 +307,6 @@ export function ingredientMarkupCreate(
 
   const modalWrap = document.querySelector('coctail-igredient-modal__wrap');
   const modalIngredient = document.querySelector('.coctail-igredient-modal');
-  console.log('modalIngredient', modalIngredient);
   modalIngredient.classList.remove('is-hidden');
   const localStorageIngerdient =
     JSON.parse(localStorage.getItem(keys.favoriteIngredients)) || [];
@@ -354,7 +347,6 @@ export function ingredientMarkupCreate(
 
   function onFavIngredientsClose(e) {
     const parentEl = e.target.closest('.coctail-igredient-modal');
-    console.log('parentEl', parentEl);
     parentEl.classList.add('is-hidden');
   }
 
