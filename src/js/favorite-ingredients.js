@@ -3,13 +3,13 @@ import {
   ingredientMarkupCreate,
   validatePage,
   onPageChange,
-  currentPage,
+  environment,
   pages,
 } from './utils';
 
 const nothingFind = document.querySelector('.ingredients-sorry');
 const ingredientsGallery = document.querySelector('.ingredients-list');
-currentPage = pages.favoriteCocktails;
+environment.currentPage = pages.favoriteCocktails;
 
 function createIngredientsMarkup() {
   const localStorageFavIngredient = JSON.parse(

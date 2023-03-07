@@ -5,11 +5,14 @@ export const pages = {
   favoriteCocktails: '.coctails__list',
   favoriteIngredients: '.ingredients-list',
 };
-export let currentPage = pages.main;
+export const environment = {
+  currentPage: pages.main
+};
 
 export function createMarkup(currentPage) {
   currentPage--;
   const cocktailsArea = document.querySelector('.gallery__list');
+  console.log(cocktailsArea);
   const svgLink = require('../img/icons.svg');
   const svg = ` &nbsp<svg class="icon" width="21" height="19">
   <use href="${svgLink}#icon-heart-empty"></use>
@@ -34,7 +37,7 @@ export function createMarkup(currentPage) {
                       <button class="button-add" type="button" id=${idDrink}>${
       favoriteCocktails?.includes(idDrink) ? 'Remove ' : 'Add to ' + svg
     }  </button>
-                  
+
                     </div>
                  </div>
                 </a>
@@ -100,9 +103,8 @@ export function validatePage(elements, localStorageKey) {
 
   localStorage.setItem(keys.cocktailsList, JSON.stringify(elements));
 
-  console.log(currentPage);
-  console.log(pages.main);
-  if (currentPage === pages.main) {
+  console.log(environment.currentPage);
+  if (environment.currentPage === pages.main) {
     const sorryBlock = document.querySelector('.sorry');
     const gallery = document.querySelector('.gallery');
 
@@ -253,7 +255,7 @@ function onModalClick(e) {
     .firstElementChild.textContent;
 
   let targetElement;
-  const targetArea = document.querySelector(currentPage);
+  const targetArea = document.querySelector(environment.currentPage);
 
   for (el of targetArea.children) {
     if (el.dataset.name === cocktailName) {
@@ -331,7 +333,7 @@ export function ingredientMarkupCreate(
             <li></li>
             </ul>
             <button type="button" class="button-more modal-add button-more__ingridients" id=${idIngredient}>
-            ${isReadyInLocalStorage ? 'Remove' : 'Add to'} 
+            ${isReadyInLocalStorage ? 'Remove' : 'Add to'}
           </button>
             `;
   const ingredientContainer = document.querySelector(
