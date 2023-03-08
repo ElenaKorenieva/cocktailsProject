@@ -6,7 +6,7 @@ export const pages = {
   favoriteIngredients: '.ingredients-list',
 };
 export const environment = {
-  currentPage: pages.main
+  currentPage: pages.main,
 };
 
 export function createMarkup(currentPage) {
@@ -50,6 +50,7 @@ export const keys = {
   favoriteCocktails: 'favoriteCocktails',
   cocktailsList: 'cocktailsList',
   favoriteIngredients: 'favoriteIngredients',
+  theme: 'theme',
 };
 
 const resolutionQuery = {
@@ -76,7 +77,10 @@ export function onFavoriteCocktailClick(event) {
     removeFromFavoriteCocktails(cocktailCard);
     return;
   }
-  if (targetElement.textContent.includes('Add to')) {
+  if (
+    targetElement.textContent.includes('Add to') ||
+    targetElement.nodeName === 'use'
+  ) {
     addToFavoriteCocktails(cocktailCard);
   }
 }
@@ -116,8 +120,6 @@ export function validatePage(elements, localStorageKey) {
     }
     createMarkup(1);
   }
-
-
 
   if (pagesAmount > 1) {
     createPagination(pagesAmount);

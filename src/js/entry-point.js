@@ -19,12 +19,16 @@ paginationListArea.addEventListener('click', event => {
 });
 
 function galleryHandler(e) {
-  console.log(e.target.textContent);
+  console.dir(e.target);
   const buttonText = e.target.textContent;
   if (buttonText === 'Learn more') {
     onLearnMoreClick(e);
   }
-  if (buttonText.includes('Add to') || buttonText === 'Remove') {
+  if (
+    buttonText.includes('Add to') ||
+    buttonText === 'Remove' ||
+    e.target.nodeName === 'use'
+  ) {
     onFavoriteCocktailClick(e);
   }
 }
