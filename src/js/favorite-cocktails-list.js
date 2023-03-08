@@ -3,11 +3,11 @@ import {
   validatePage,
   onPageChange,
   createReadyMarkup,
-  currentPage,
+  environment,
   pages,
 } from './utils';
 
-currentPage = pages.favoriteCocktails;
+environment.currentPage = pages.favoriteCocktails;
 
 const cocktailsList = document.querySelector('.coctails__list');
 const paginationListArea = document.querySelector('.pagination-list');

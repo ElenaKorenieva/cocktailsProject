@@ -4,11 +4,11 @@ import {
   onLearnMoreClick,
   onFavoriteCocktailClick,
   createMarkup,
-  currentPage,
+  environment,
   pages,
 } from './utils';
 
-currentPage = pages.main;
+environment.currentPage = pages.main;
 
 const galleryList = document.querySelector('.gallery__list');
 const paginationListArea = document.querySelector('.pagination-list');
