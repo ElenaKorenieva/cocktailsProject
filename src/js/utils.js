@@ -266,7 +266,7 @@ function createInfoMarkup(data) {
       ingredients.push(ingredient);
     }
   }
-  console.log(localStorage.getItem(keys.favoriteCocktails));
+
   modalContainer.innerHTML = `
   <h1 class="modal-cocktail-name">${cocktailName}</h1>
   <div class="modal-cocktail-instructions">
@@ -461,9 +461,7 @@ export function addListenersToModal() {
   const burgerBtn = document.querySelector('.menu__btn');
   const mobileMenu = document.querySelector('.mobile-menu');
   const mobileMenuCloseBtn = document.querySelector('.modal__close');
-  console.log(burgerBtn);
-  console.log(mobileMenu);
-  console.log(mobileMenuCloseBtn);
+
   burgerBtn.addEventListener('click', () => {
     mobileMenu.classList.remove('is-hidden');
   });

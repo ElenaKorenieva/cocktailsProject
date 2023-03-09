@@ -28,8 +28,6 @@ function onFavoriteCocktailClick(event) {
   const cocktailCard = targetElement.closest('.gallery__card');
 
   if (targetElement.textContent === 'Remove') {
-    console.log(targetElement);
-
     const cardId = storage.findIndex(el =>
       el.includes(cocktailCard.dataset.id)
     );
