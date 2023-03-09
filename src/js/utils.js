@@ -461,7 +461,9 @@ export function addListenersToModal() {
   const burgerBtn = document.querySelector('.menu__btn');
   const mobileMenu = document.querySelector('.mobile-menu');
   const mobileMenuCloseBtn = document.querySelector('.modal__close');
-
+  console.log(burgerBtn);
+  console.log(mobileMenu);
+  console.log(mobileMenuCloseBtn);
   burgerBtn.addEventListener('click', () => {
     mobileMenu.classList.remove('is-hidden');
   });

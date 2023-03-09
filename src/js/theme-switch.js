@@ -2,6 +2,8 @@ import { keys } from './utils';
 
 const toggleSwitch = document.querySelector('#toggle-theme');
 const toggleSwitchMob = document.querySelector('#toggle-burger');
+console.log(toggleSwitch);
+console.log(toggleSwitchMob);
 toggleSwitch.addEventListener('change', switchTheme, false);
 toggleSwitchMob.addEventListener('change', switchTheme, false);
 
