@@ -2,9 +2,12 @@ import {
   keys,
   validatePage,
   onPageChange,
-  createReadyMarkup,
   environment,
   pages,
+  addListenersToModal,
+  updateMarkupFavoriteCocktail,
+  onLearnMoreClick,
+  addToFavoriteCocktails,
 } from './utils';
 
 environment.currentPage = pages.favoriteCocktails;
@@ -24,11 +27,23 @@ function onFavoriteCocktailClick(event) {
     JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
   const cocktailCard = targetElement.closest('.gallery__card');
 
-  targetElement.textContent = 'Add to';
-  const cardId = storage.findIndex(el => el.includes(cocktailCard.dataset.id));
-  storage.splice(cardId, 1);
-  localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
-  createReadyMarkup(dispalyedPage, keys.favoriteCocktails);
+  if (targetElement.textContent === 'Remove') {
+    console.log(targetElement);
+
+    const cardId = storage.findIndex(el =>
+      el.includes(cocktailCard.dataset.id)
+    );
+    storage.splice(cardId, 1);
+    localStorage.setItem(keys.favoriteCocktails, JSON.stringify(storage));
+    updateMarkupFavoriteCocktail(dispalyedPage, keys.favoriteCocktails);
+    return;
+  }
+  if (targetElement.textContent === 'Learn more') {
+    onLearnMoreClick(event);
+  }
+  if (targetElement.textContent === 'Add to') {
+    addToFavoriteCocktails(cocktailCard);
+  }
 }
 
 let dispalyedPage = 1;
@@ -37,3 +52,5 @@ paginationListArea.addEventListener('click', event => {
   dispalyedPage = +event.target.textContent;
   onPageChange(event, true, keys.favoriteCocktails);
 });
+
+addListenersToModal();

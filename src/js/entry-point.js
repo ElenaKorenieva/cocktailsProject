@@ -6,6 +6,7 @@ import {
   createMarkup,
   environment,
   pages,
+  addListenersToModal,
 } from './utils';
 
 environment.currentPage = pages.main;
@@ -19,7 +20,6 @@ paginationListArea.addEventListener('click', event => {
 });
 
 function galleryHandler(e) {
-  console.dir(e.target);
   const buttonText = e.target.textContent;
   if (buttonText === 'Learn more') {
     onLearnMoreClick(e);
@@ -32,3 +32,5 @@ function galleryHandler(e) {
     onFavoriteCocktailClick(e);
   }
 }
+
+addListenersToModal();

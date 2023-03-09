@@ -9,6 +9,12 @@ export const environment = {
   currentPage: pages.main,
 };
 
+export const data = {
+  totalPagesPagination: 0,
+};
+
+const MAX_PAGES_MOBILE = 6;
+
 export function createMarkup(currentPage) {
   currentPage--;
   const cocktailsArea = document.querySelector('.gallery__list');
@@ -95,7 +101,7 @@ export function validatePage(elements, localStorageKey) {
   }
 
   const pagesAmount = getPagesCount(elements.length);
-  console.log(typeof elements[0]);
+
   if (environment.currentPage === pages.favoriteCocktails) {
     createReadyMarkup(pagesAmount === 0 ? 0 : 1, localStorageKey);
     if (pagesAmount > 1) {
@@ -127,6 +133,15 @@ export function validatePage(elements, localStorageKey) {
 }
 
 function createPagination(pages) {
+  data.totalPagesPagination = pages;
+
+  if (
+    checkClientViewPort() === resolutionQuery.mobile &&
+    pages > MAX_PAGES_MOBILE
+  ) {
+    createPaginationForMobile();
+    return;
+  }
   const paginationListArea = document.querySelector('.pagination-list');
   let markUpString = '';
   for (let i = 1; i <= pages; i++) {
@@ -136,8 +151,61 @@ function createPagination(pages) {
   paginationListArea.innerHTML = markUpString;
 }
 
+export function updateMarkupFavoriteCocktail(dispalyedPage, key) {
+  const elements = JSON.parse(localStorage.getItem(key));
+  const pagesAmount = getPagesCount(elements.length);
+  createReadyMarkup(
+    dispalyedPage > pagesAmount ? pagesAmount : dispalyedPage,
+    key
+  );
+  if (pagesAmount > 1) {
+    createPagination(pagesAmount);
+  } else {
+    const paginationListArea = document.querySelector('.pagination-list');
+    paginationListArea.innerHTML = '';
+  }
+}
+
+function updatePaginationForMobile(arrowSymbol) {
+  const paginationChildren =
+    document.querySelector('.pagination-list').children;
+  const step =
+    arrowSymbol === '>' ? MAX_PAGES_MOBILE - 2 : -(MAX_PAGES_MOBILE - 2);
+
+  for (let item of paginationChildren) {
+    item = item.firstElementChild;
+    const newPageNumber = +item.textContent + step;
+    if (newPageNumber > data.totalPagesPagination || newPageNumber < 1) {
+      break;
+    }
+    if (item.textContent === '<' || item.textContent === '>') {
+      continue;
+    }
+
+    item.textContent = newPageNumber;
+  }
+}
+
+function createPaginationForMobile() {
+  const paginationListArea = document.querySelector('.pagination-list');
+  let markUpString = '';
+  for (let i = 0; i < MAX_PAGES_MOBILE; i++) {
+    markUpString += `<li class="pagination-item"><button type="button" class="pagination-button">${
+      i === 0 ? '<' : i === MAX_PAGES_MOBILE - 1 ? '>' : i
+    }</button>
+  </li>`;
+  }
+  paginationListArea.innerHTML = markUpString;
+}
+
 export function onPageChange(event, isReadyMarkup, localStorageKey) {
-  const pageNumber = +event.target.textContent;
+  const symbol = event.target.textContent;
+  if (symbol === '<' || symbol === '>') {
+    updatePaginationForMobile(symbol);
+    return;
+  }
+
+  const pageNumber = +symbol;
   if (isReadyMarkup) {
     createReadyMarkup(pageNumber, localStorageKey);
     return;
@@ -150,21 +218,22 @@ export function createReadyMarkup(pageNumber, localStorageKey) {
   const targetArea = document.querySelector(
     isCocktails ? '.coctails__list' : 'ingredients-list'
   );
-  if (!pageNumber) {
+
+  pageNumber--;
+  const favoriteList = JSON.parse(localStorage.getItem(localStorageKey)) || [];
+  const viewPort = checkClientViewPort();
+  const elements = favoriteList.slice(
+    pageNumber * viewPort,
+    (pageNumber + 1) * viewPort
+  );
+
+  if (elements.length === 0) {
     targetArea.style.display = 'flex';
     targetArea.innerHTML = `<p class="sorry__title-coctails ">You haven't added any favorite ${
       isCocktails ? 'cocktails' : 'ingredients'
     } yet</p>`;
     return;
   }
-
-  pageNumber--;
-  const favoriteList = JSON.parse(localStorage.getItem(localStorageKey));
-  const viewPort = checkClientViewPort();
-  const elements = favoriteList.slice(
-    pageNumber * viewPort,
-    (pageNumber + 1) * viewPort
-  );
 
   targetArea.innerHTML = elements.join('');
 }
@@ -197,6 +266,7 @@ function createInfoMarkup(data) {
       ingredients.push(ingredient);
     }
   }
+  console.log(localStorage.getItem(keys.favoriteCocktails));
   modalContainer.innerHTML = `
   <h1 class="modal-cocktail-name">${cocktailName}</h1>
   <div class="modal-cocktail-instructions">
@@ -269,7 +339,7 @@ function onModalClick(e) {
   }
 }
 
-function addToFavoriteCocktails(element) {
+export function addToFavoriteCocktails(element) {
   element.querySelector('.button-add').textContent = 'Remove';
   const storage =
     JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
@@ -382,4 +452,21 @@ function onClickHandler(e, ingedientData, onRemoveCallback) {
       onRemoveCallback();
     }
   }
+}
+
+export function addListenersToModal() {
+  if (checkClientViewPort() === resolutionQuery.desktop) {
+    return;
+  }
+  const burgerBtn = document.querySelector('.menu__btn');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const mobileMenuCloseBtn = document.querySelector('.modal__close');
+
+  burgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.remove('is-hidden');
+  });
+
+  mobileMenuCloseBtn.addEventListener('click', () => {
+    mobileMenu.classList.add('is-hidden');
+  });
 }

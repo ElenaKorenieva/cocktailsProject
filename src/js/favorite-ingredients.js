@@ -1,10 +1,9 @@
 import {
   keys,
   ingredientMarkupCreate,
-  validatePage,
-  onPageChange,
   environment,
   pages,
+  addListenersToModal,
 } from './utils';
 
 const nothingFind = document.querySelector('.ingredients-sorry');
@@ -89,3 +88,5 @@ function onFavoriteCocktailClick(e) {
   );
   createIngredientsMarkup();
 }
+
+addListenersToModal();
