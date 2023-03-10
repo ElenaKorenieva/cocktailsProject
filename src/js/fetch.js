@@ -1,7 +1,5 @@
 import axios from 'axios';
-import renderFunc from '../js/renderFunc';
-renderFunc.resolutionQuery;
-const perPage = renderFunc.itemsPerPage;
+import { checkClientViewPort } from './utils';
 
 const instance = axios.create({
   baseURL: 'https://www.thecocktaildb.com/api/json/v1/1',
@@ -31,6 +29,7 @@ const fetchRandomCocktail = async () => {
   const response = {
     drinks: [],
   };
+  const perPage = checkClientViewPort();
   for (let i = 0; i < perPage; i++) {
     const arr = await makeRequest('/random.php');
     response.drinks.push(arr.drinks[0]);
