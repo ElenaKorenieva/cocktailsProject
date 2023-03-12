@@ -6,8 +6,11 @@ import {
   addListenersToModal,
 } from './utils';
 
+const searchForm = document.querySelector('.search');
 const nothingFind = document.querySelector('.ingredients-sorry');
 const ingredientsGallery = document.querySelector('.ingredients-list');
+
+searchForm.classList.add('is-hidden');
 environment.currentPage = pages.favoriteCocktails;
 
 function createIngredientsMarkup() {

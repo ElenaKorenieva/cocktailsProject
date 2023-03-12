@@ -175,9 +175,16 @@ function updatePaginationForMobile(arrowSymbol) {
   for (let item of paginationChildren) {
     item = item.firstElementChild;
     const newPageNumber = +item.textContent + step;
+    if (
+      (item.textContent === '<' && newPageNumber === 1) ||
+      (item.textContent === '>' && newPageNumber === data.totalPagesPagination)
+    ) {
+      item.disabled = true;
+    }
     if (newPageNumber > data.totalPagesPagination || newPageNumber < 1) {
       break;
     }
+
     if (item.textContent === '<' || item.textContent === '>') {
       continue;
     }

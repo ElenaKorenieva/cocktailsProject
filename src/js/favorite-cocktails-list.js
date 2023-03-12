@@ -12,11 +12,13 @@ import {
 
 environment.currentPage = pages.favoriteCocktails;
 
+const searchForm = document.querySelector('.search');
 const cocktailsList = document.querySelector('.coctails__list');
 const paginationListArea = document.querySelector('.pagination-list');
 const favoriteCocktailsList =
   JSON.parse(localStorage.getItem(keys.favoriteCocktails)) || [];
 
+searchForm.classList.add('is-hidden');
 validatePage(favoriteCocktailsList, keys.favoriteCocktails);
 
 cocktailsList.addEventListener('click', onFavoriteCocktailClick);
