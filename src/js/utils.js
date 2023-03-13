@@ -176,8 +176,8 @@ function updatePaginationForMobile(arrowSymbol) {
     item = item.firstElementChild;
     const newPageNumber = +item.textContent + step;
     if (
-      (item.textContent === '<' && newPageNumber === 1) ||
-      (item.textContent === '>' && newPageNumber === data.totalPagesPagination)
+      (item.textContent === '<' && newPageNumber <= 1) ||
+      (item.textContent === '>' && newPageNumber >= data.totalPagesPagination)
     ) {
       item.disabled = true;
     }
