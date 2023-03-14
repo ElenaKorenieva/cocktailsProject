@@ -2,14 +2,14 @@
   "name": "cocktails_project",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://AlinaS13.github.io/cocktails_project",
+  "homepage": "https://ElenaKorenieva.github.io/cocktailsProject",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /cocktails_project/"
+    "build": "parcel build src/*.html --public-url /cocktailsProject/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/goitacademy/parcel-project-template.git"
+    "url": "git+https://github.com/ElenaKorenieva/cocktailsProject.git"
   },
   "keywords": [],
   "author": "Alexander Repeta <alexander.repeta@gmail.com>",

@@ -33,3 +33,8 @@
 .pagination-list--margin {
   margin-top: 20px;
 }
+
+.active {
+  background-color: var(--btn-color);
+  color: #ffff;
+}
