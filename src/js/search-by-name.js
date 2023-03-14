@@ -1,6 +1,5 @@
 import fetchData from './fetch';
-import { createMarkup, validatePage } from './utils';
-import { keys } from './utils';
+import { validatePage } from './utils';
 
 const form = document.querySelector('form');
 

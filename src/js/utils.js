@@ -115,10 +115,12 @@ export function validatePage(elements, localStorageKey) {
   if (environment.currentPage === pages.main) {
     const sorryBlock = document.querySelector('.sorry');
     const gallery = document.querySelector('.gallery');
+    const paginationBlock = document.querySelector('.pagination-list');
 
     if (pagesAmount <= 0) {
       gallery.classList.add('visually-hidden');
       sorryBlock.classList.remove('hidden');
+      paginationBlock.classList.add('visually-hidden');
       return;
     } else {
       sorryBlock.classList.add('hidden');
@@ -175,13 +177,8 @@ function updatePaginationForMobile(arrowSymbol) {
   for (let item of paginationChildren) {
     item = item.firstElementChild;
     const newPageNumber = +item.textContent + step;
-    if (
-      (item.textContent === '<' && newPageNumber <= 1) ||
-      (item.textContent === '>' && newPageNumber >= data.totalPagesPagination)
-    ) {
-      item.disabled = true;
-    }
-    if (newPageNumber > data.totalPagesPagination || newPageNumber < 1) {
+
+    if (newPageNumber >= data.totalPagesPagination || newPageNumber < 1) {
       break;
     }
 
@@ -207,12 +204,21 @@ function createPaginationForMobile() {
 
 export function onPageChange(event, isReadyMarkup, localStorageKey) {
   const symbol = event.target.textContent;
+  const targetBtn = event.target;
+  const activeBtn = document.querySelector('.active');
+  if (activeBtn !== null) {
+    activeBtn.classList.remove('active');
+  }
+
+  targetBtn.classList.add('active');
+
   if (symbol === '<' || symbol === '>') {
     updatePaginationForMobile(symbol);
     return;
   }
 
   const pageNumber = +symbol;
+
   if (isReadyMarkup) {
     createReadyMarkup(pageNumber, localStorageKey);
     return;
