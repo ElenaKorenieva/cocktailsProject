@@ -179,12 +179,7 @@ function updatePaginationForMobile(arrowSymbol) {
     }
 
     const newPageNumber = +item.textContent + step;
-    // if (
-    //   (item.textContent === '<' && newPageNumber <= 1) ||
-    //   (item.textContent === '>' && newPageNumber >= data.totalPagesPagination)
-    // ) {
-    //   item.disabled = true;
-    // }
+
     item.textContent = newPageNumber;
 
     if (newPageNumber > data.totalPagesPagination) {
@@ -193,23 +188,25 @@ function updatePaginationForMobile(arrowSymbol) {
     } else {
       item.style.display = '';
     }
-
-    console.log(newPageNumber);
   }
 
   // enable disable buttons
   const leftArrowBtn = paginationChildren[0].querySelector('button');
-  const rightArrowBtn = paginationChildren[paginationChildren.length - 1].querySelector('button');
+  const rightArrowBtn =
+    paginationChildren[paginationChildren.length - 1].querySelector('button');
   if (paginationChildren[1].textContent.includes('1')) {
-    disableEnablePaginationButton(leftArrowBtn, true)
+    disableEnablePaginationButton(leftArrowBtn, true);
   } else {
-    disableEnablePaginationButton(leftArrowBtn, false)
+    disableEnablePaginationButton(leftArrowBtn, false);
   }
 
-  if (paginationChildren[paginationChildren.length - 2].textContent >= data.totalPagesPagination) {
-    disableEnablePaginationButton(rightArrowBtn, true)
+  if (
+    paginationChildren[paginationChildren.length - 2].textContent >=
+    data.totalPagesPagination
+  ) {
+    disableEnablePaginationButton(rightArrowBtn, true);
   } else {
-    disableEnablePaginationButton(rightArrowBtn, false)
+    disableEnablePaginationButton(rightArrowBtn, false);
   }
 }
 
@@ -223,16 +220,27 @@ function createPaginationForMobile() {
   </li>`;
   }
   paginationListArea.innerHTML = markUpString;
-  disableEnablePaginationButton(paginationListArea.firstElementChild.querySelector('button'), true);
+  disableEnablePaginationButton(
+    paginationListArea.firstElementChild.querySelector('button'),
+    true
+  );
 }
 
-function disableEnablePaginationButton (btn, disable) {
+function disableEnablePaginationButton(btn, disable) {
   btn.disabled = disable;
   btn.style.opacity = disable ? 0.5 : 1;
 }
 
 export function onPageChange(event, isReadyMarkup, localStorageKey) {
+  const targetBtn = event.target;
   const symbol = event.target.textContent;
+  const activeBtn = document.querySelector('.active');
+
+  if (activeBtn !== null) {
+    activeBtn.classList.remove('active');
+  }
+  targetBtn.classList.add('active');
+
   if (symbol === '<' || symbol === '>') {
     updatePaginationForMobile(symbol);
     return;
