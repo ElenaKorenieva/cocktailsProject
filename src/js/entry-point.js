@@ -1,9 +1,7 @@
 import {
-  keys,
   onPageChange,
   onLearnMoreClick,
   onFavoriteCocktailClick,
-  createMarkup,
   environment,
   pages,
   addListenersToModal,
