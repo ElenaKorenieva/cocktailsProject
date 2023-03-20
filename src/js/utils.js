@@ -365,7 +365,7 @@ function onModalClick(e) {
   let targetElement;
   const targetArea = document.querySelector(environment.currentPage);
 
-  for (el of targetArea.children) {
+  for (let el of targetArea.children) {
     if (el.dataset.name === cocktailName) {
       targetElement = el;
     }
